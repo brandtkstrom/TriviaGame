@@ -29,7 +29,9 @@ class TriviaGame {
                 name: 'answer',
                 id: `option${i + 1}`
             };
-            let $input = $('<input>').attr(attributes);
+            let $input = $('<input>')
+                .attr(attributes)
+                .prop('index', i);
             if (i === 0) {
                 $input.prop('checked', true);
             }
@@ -51,6 +53,9 @@ class TriviaGame {
         if (this.currentQuestion === this.questions.length - 1) {
             // Game is over
             // need to tally score and update screen
+            clearInterval(this.interval);
+            this.printResults();
+            return;
         }
         this.elapsedTime = 0;
         $('#timer').text(this.timeLimit / 1000);
@@ -62,6 +67,11 @@ class TriviaGame {
 
         // TODO - implement timer
     }
+    printResults() {
+        // TODO
+        $('#content').empty();
+        return;
+    }
     intervalUpdate(game) {
         game.elapsedTime += 1000;
         console.log(game.elapsedTime);
@@ -72,24 +82,25 @@ class TriviaGame {
             return;
         }
 
-        $('#timer').hide();
+        $('#timer').text(0);
         let question = game.questions[game.currentQuestion];
         question.playerIsCorrect = false;
         game.nextQuestion();
     }
     initGame() {
         // Called when game is first initialized
+        this.attachEventHandlers();
     }
     beginTrivia() {
         // Called to begin a new trivia round
-        setInterval(this.intervalUpdate, 1000, this);
+        this.interval = setInterval(this.intervalUpdate, 1000, this);
         this.nextQuestion();
     }
     attachEventHandlers() {
         $('#content').on('click', '.submit', evt => {
-            // get select answer
-            // answer current question
-            // call next question
+            let selected = $("input[name='answer']:checked").prop('index');
+            let question = this.questions[this.currentQuestion];
+            question.answer(selected);
         });
     }
 }
@@ -98,5 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const triviaQuestions = TriviaGame.getShuffledQuestions();
     const triviaGame = new TriviaGame(triviaQuestions);
     console.log(triviaGame);
+    triviaGame.initGame();
     triviaGame.beginTrivia();
 });

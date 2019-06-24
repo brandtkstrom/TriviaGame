@@ -3,12 +3,17 @@ class Question {
         this.text = text;
         this.options = options;
         this.answerIdx = answerIdx;
+        this.playerAnswerIdx = -1;
         this.playerIsCorrect = false;
         this.seq = Math.random();
     }
     answerIsCorrect(index) {
         this.playerIsCorrect = index === this.answerIdx;
         return this.playerIsCorrect;
+    }
+    answer(index) {
+        this.playerAnswerIdx = index;
+        this.playerIsCorrect = this.playerAnswerIdx === this.answerIdx;
     }
 }
 

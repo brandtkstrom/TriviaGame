@@ -1,9 +1,10 @@
 class Question {
-    constructor(question, options, answerIdx) {
-        this.question = question;
+    constructor(text, options, answerIdx) {
+        this.text = text;
         this.options = options;
         this.answerIdx = answerIdx;
         this.playerIsCorrect = false;
+        this.seq = Math.random();
     }
     answerIsCorrect(index) {
         this.playerIsCorrect = index === this.answerIdx;

@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>The Office Trivia</title>
+        <link rel="stylesheet" href="assets/css/style.css" />
         <script
             src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -12,6 +13,30 @@
         ></script>
     </head>
     <body>
+        <header>
+            <img id="logo" src="assets/images/logo.svg" alt="The Office" />
+            <svg
+                id="logo"
+                height="85"
+                width="200"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <text
+                    x="30"
+                    y="85"
+                    style="fill:red"
+                    transform="rotate(-20,30,100)"
+                >
+                    Trivia!
+                </text>
+            </svg>
+        </header>
+        <div id="container">
+            <p id="timer"></p>
+            <div id="content"></div>
+        </div>
+
+        <!-- Scripts -->
         <script src="assets/javascript/questions.js"></script>
         <script src="assets/javascript/app.js"></script>
     </body>

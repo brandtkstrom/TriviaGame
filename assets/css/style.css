@@ -39,6 +39,7 @@ button {
     margin: 20px 0;
     font-weight: bold;
     font-size: 24px;
+    outline: none;
 }
 
 button.submit {

@@ -102,7 +102,7 @@ function buildQuestions() {
         new Question(
             'In "Diversity Day", what was the man\'s name that came in to talk to Michael about racial discrimination?',
             ['Mr. Black', 'Mr. Sabre', 'Mr. Brown', 'Mr. Bean'],
-            3
+            2
         ),
         new Question(
             "In 'Gay Witch Hunt' which character confesses that he is gay?",

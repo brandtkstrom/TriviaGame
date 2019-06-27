@@ -2,7 +2,7 @@ class TriviaGame {
     constructor(questions) {
         this.questions = questions;
         this.optionChars = ['A', 'B', 'C', 'D'];
-        this.timeLimit = 10 * 1000;
+        this.timeLimit = 20 * 1000;
         this.elapsedTime = 0;
         this.currentQuestion = 0;
         this.interval = undefined;
@@ -49,7 +49,7 @@ class TriviaGame {
     }
     nextQuestion() {
         // Chck to see if any remaining questions
-        if (this.currentQuestion === this.questions.length - 1) {
+        if (this.currentQuestion === this.questions.length) {
             // Game is over
             // need to tally score and update screen
             clearInterval(this.interval);
@@ -60,18 +60,25 @@ class TriviaGame {
         $('#timer').text(this.timeLimit / 1000);
 
         // Get next trivia question
-        this.currentQuestion++;
-        console.log(this.currentQuestion);
         let question = this.questions[this.currentQuestion];
 
         this.printQuestion(question);
-
-        // TODO - implement timer
     }
-    printTitle() {}
     printResults() {
         $('#timerText').remove();
         $('#content').empty();
+
+        let total = this.questions.length;
+        let wrong = this.questions.filter(q => !q.playerIsCorrect);
+        let $title = $('<div>').attr('id', 'title');
+        let $result = $('<h2>').text(`You got ${total - wrong.length}/${total} questions correct.`);
+        let $restart = $('<button>').text('New Game').addClass('restart');
+
+        $title.append($result, $restart);
+        $('#content').append($title);
+
+        console.log(this);
+
         return;
     }
     intervalUpdate(game) {
@@ -86,9 +93,6 @@ class TriviaGame {
         question.playerIsCorrect = false;
         game.nextQuestion();
     }
-    initGame() {
-        this.attachEventHandlers();
-    }
     beginTrivia() {
         $('#content').empty();
         let $timerText = $('<p>')
@@ -101,10 +105,19 @@ class TriviaGame {
     }
     attachEventHandlers() {
         $('#content').on('click', '.submit', evt => {
+            evt.preventDefault();
             let selected = $("input[name='answer']:checked").prop('index');
             let question = this.questions[this.currentQuestion];
             question.answer(selected);
+            this.currentQuestion++;
+            console.log(`${question.playerIsCorrect}`);
             this.nextQuestion();
+        });
+
+        $('#content').on('click', '.restart', evt => {
+            this.questions = TriviaGame.getShuffledQuestions();
+            this.currentQuestion = 0;
+            this.beginTrivia();
         });
     }
 }
@@ -112,8 +125,7 @@ class TriviaGame {
 document.addEventListener('DOMContentLoaded', () => {
     const triviaQuestions = TriviaGame.getShuffledQuestions();
     const triviaGame = new TriviaGame(triviaQuestions);
-    console.log(triviaGame);
-    triviaGame.initGame();
+    triviaGame.attachEventHandlers();
 
     $('#start').on('click', () => {
         triviaGame.beginTrivia();

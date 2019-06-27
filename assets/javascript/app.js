@@ -30,6 +30,7 @@ class TriviaGame {
                 id: `option${i + 1}`
             };
             let $input = $('<input>')
+                .addClass('form-radio')
                 .attr(attributes)
                 .prop('index', i);
             if (i === 0) {
@@ -42,10 +43,8 @@ class TriviaGame {
         let $button = $('<button>')
             .text('Submit')
             .addClass('submit');
-        $form
-            .append($question)
-            .append($options)
-            .append($button);
+
+        $form.append($question, $options, $button);
         $('#content').html($form);
     }
     nextQuestion() {
@@ -61,24 +60,24 @@ class TriviaGame {
         $('#timer').text(this.timeLimit / 1000);
 
         // Get next trivia question
-        let question = this.questions[++this.currentQuestion];
+        this.currentQuestion++;
+        console.log(this.currentQuestion);
+        let question = this.questions[this.currentQuestion];
 
         this.printQuestion(question);
 
         // TODO - implement timer
     }
+    printTitle() {}
     printResults() {
-        // TODO
+        $('#timerText').remove();
         $('#content').empty();
         return;
     }
     intervalUpdate(game) {
         game.elapsedTime += 1000;
-        console.log(game.elapsedTime);
         if (game.elapsedTime < game.timeLimit) {
-            $('#timer')
-                .show()
-                .text((game.timeLimit - game.elapsedTime) / 1000);
+            $('#timer').text((game.timeLimit - game.elapsedTime) / 1000);
             return;
         }
 
@@ -88,11 +87,15 @@ class TriviaGame {
         game.nextQuestion();
     }
     initGame() {
-        // Called when game is first initialized
         this.attachEventHandlers();
     }
     beginTrivia() {
-        // Called to begin a new trivia round
+        $('#content').empty();
+        let $timerText = $('<p>')
+            .html('Question time left: <span id="timer"></span>')
+            .attr('id', 'timerText');
+        $('#container').prepend($timerText);
+
         this.interval = setInterval(this.intervalUpdate, 1000, this);
         this.nextQuestion();
     }
@@ -101,6 +104,7 @@ class TriviaGame {
             let selected = $("input[name='answer']:checked").prop('index');
             let question = this.questions[this.currentQuestion];
             question.answer(selected);
+            this.nextQuestion();
         });
     }
 }
@@ -110,5 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const triviaGame = new TriviaGame(triviaQuestions);
     console.log(triviaGame);
     triviaGame.initGame();
-    triviaGame.beginTrivia();
+
+    $('#start').on('click', () => {
+        triviaGame.beginTrivia();
+    });
 });

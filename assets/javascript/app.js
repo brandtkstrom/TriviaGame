@@ -116,7 +116,6 @@ class TriviaGame {
         });
         let question = game.questions[game.currentQuestion];
         question.playerIsCorrect = false;
-        game.timeout.play();
         game.nextQuestion();
     }
     beginTrivia() {

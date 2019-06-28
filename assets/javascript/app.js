@@ -1,13 +1,14 @@
 class TriviaGame {
-    constructor(questions) {
-        this.questions = questions;
+    constructor() {
+        this.questions = this.getShuffledQuestions();
         this.optionChars = ['A', 'B', 'C', 'D'];
         this.timeLimit = 20 * 1000;
         this.elapsedTime = 0;
         this.currentQuestion = 0;
         this.interval = undefined;
+        this.attachEventHandlers();
     }
-    static getShuffledQuestions() {
+    getShuffledQuestions() {
         let questions = buildQuestions();
         return questions.sort((q1, q2) => q1.seq - q2.seq);
     }
@@ -51,8 +52,7 @@ class TriviaGame {
         // Check to see if any remaining questions
         this.currentQuestion++;
         if (this.currentQuestion === this.questions.length) {
-            // Game is over
-            // need to tally score and update screen
+            // Game is over - no more questions
             clearInterval(this.interval);
             this.printResults();
             return;
@@ -126,7 +126,7 @@ class TriviaGame {
         });
 
         $('#content').on('click', '.restart', evt => {
-            this.questions = TriviaGame.getShuffledQuestions();
+            this.questions = this.getShuffledQuestions();
             this.currentQuestion = 0;
             this.beginTrivia();
         });
@@ -134,9 +134,7 @@ class TriviaGame {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const triviaQuestions = TriviaGame.getShuffledQuestions();
-    const triviaGame = new TriviaGame(triviaQuestions);
-    triviaGame.attachEventHandlers();
+    const triviaGame = new TriviaGame();
 
     $('#start').on('click', () => {
         triviaGame.beginTrivia();

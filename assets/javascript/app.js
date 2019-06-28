@@ -48,7 +48,8 @@ class TriviaGame {
         $('#content').html($form);
     }
     nextQuestion() {
-        // Chck to see if any remaining questions
+        // Check to see if any remaining questions
+        this.currentQuestion++;
         if (this.currentQuestion === this.questions.length) {
             // Game is over
             // need to tally score and update screen
@@ -71,8 +72,12 @@ class TriviaGame {
         let total = this.questions.length;
         let wrong = this.questions.filter(q => !q.playerIsCorrect);
         let $title = $('<div>').attr('id', 'title');
-        let $result = $('<h2>').text(`You got ${total - wrong.length}/${total} questions correct.`);
-        let $restart = $('<button>').text('New Game').addClass('restart');
+        let $result = $('<h2>').text(
+            `You got ${total - wrong.length}/${total} questions correct.`
+        );
+        let $restart = $('<button>')
+            .text('New Game')
+            .addClass('restart');
 
         $title.append($result, $restart);
         $('#content').append($title);
@@ -101,7 +106,14 @@ class TriviaGame {
         $('#container').prepend($timerText);
 
         this.interval = setInterval(this.intervalUpdate, 1000, this);
-        this.nextQuestion();
+
+        $('#timer').text(this.timeLimit / 1000);
+
+        // Get first trivia question
+        this.currentQuestion = 0;
+        let question = this.questions[this.currentQuestion];
+
+        this.printQuestion(question);
     }
     attachEventHandlers() {
         $('#content').on('click', '.submit', evt => {
@@ -109,8 +121,7 @@ class TriviaGame {
             let selected = $("input[name='answer']:checked").prop('index');
             let question = this.questions[this.currentQuestion];
             question.answer(selected);
-            this.currentQuestion++;
-            console.log(`${question.playerIsCorrect}`);
+            console.log(`Answer correct? - ${question.playerIsCorrect}`);
             this.nextQuestion();
         });
 

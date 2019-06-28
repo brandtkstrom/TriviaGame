@@ -6,6 +6,9 @@ class TriviaGame {
         this.elapsedTime = 0;
         this.currentQuestion = 0;
         this.interval = undefined;
+        this.correct = new Audio('assets/media/correct.mp3');
+        this.wrong = new Audio('assets/media/wrong.mp3');
+        this.idiot = new Audio('assets/media/idiot.mp3');
         this.attachEventHandlers();
     }
     getShuffledQuestions() {
@@ -82,23 +85,41 @@ class TriviaGame {
         $title.append($result, $restart);
         $('#content').append($title);
 
-        console.log(this);
+        if (wrong.length >= 1) {
+            this.idiot.play();
+        }
 
         return;
     }
     intervalUpdate(game) {
         game.elapsedTime += 1000;
         if (game.elapsedTime < game.timeLimit) {
-            $('#timer').text((game.timeLimit - game.elapsedTime) / 1000);
+            let timeLeft = (game.timeLimit - game.elapsedTime) / 1000;
+            $('#timer').text(timeLeft);
+
+            if (timeLeft <= 5) {
+                $('#timer').css({
+                    'color': '#F00',
+                    'font-weight': 'bold'
+                });
+            }
+
             return;
         }
 
-        $('#timer').text(0);
+        $('#timer').text(0).css({
+            'color': 'inherit',
+            'font-weight': 'normal'
+        });
         let question = game.questions[game.currentQuestion];
         question.playerIsCorrect = false;
         game.nextQuestion();
     }
     beginTrivia() {
+        this.correct.load();
+        this.wrong.load();
+        this.idiot.load();
+
         $('#content').empty();
         let $timerText = $('<p>')
             .html('Question time left: <span id="timer"></span>')
@@ -121,6 +142,13 @@ class TriviaGame {
             let selected = $("input[name='answer']:checked").prop('index');
             let question = this.questions[this.currentQuestion];
             question.answer(selected);
+            if (question.playerIsCorrect) {
+                this.correct.currentTime = 0;
+                this.correct.play();
+            } else {
+                this.wrong.currentTime = 0;
+                this.wrong.play();
+            }
             console.log(`Answer correct? - ${question.playerIsCorrect}`);
             this.nextQuestion();
         });

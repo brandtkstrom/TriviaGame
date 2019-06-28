@@ -9,6 +9,7 @@ class TriviaGame {
         this.correct = new Audio('assets/media/correct.mp3');
         this.wrong = new Audio('assets/media/wrong.mp3');
         this.idiot = new Audio('assets/media/idiot.mp3');
+        this.timeout = new Audio('assets/media/timeout.mp3');
         this.attachEventHandlers();
     }
     getShuffledQuestions() {
@@ -102,6 +103,8 @@ class TriviaGame {
                     'color': '#F00',
                     'font-weight': 'bold'
                 });
+                game.timeout.currentTime = 0;
+                game.timeout.play();
             }
 
             return;
@@ -113,12 +116,14 @@ class TriviaGame {
         });
         let question = game.questions[game.currentQuestion];
         question.playerIsCorrect = false;
+        game.timeout.play();
         game.nextQuestion();
     }
     beginTrivia() {
         this.correct.load();
         this.wrong.load();
         this.idiot.load();
+        this.timeout.load();
 
         $('#content').empty();
         let $timerText = $('<p>')
